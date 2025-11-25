@@ -1,0 +1,28 @@
+<template>
+    <lightning-card title={labelOpportunityProducts}>
+
+        <!-- Product table -->
+        <template if:true={products.length}>
+            <lightning-datatable
+                key-field="id"
+                data={products}
+                columns={columns}
+            ></lightning-datatable>
+        4</template>
+
+        <!-- No products message -->
+        <template if:false={products.length}>
+                <template for:each={noProductLines} for:item="line">
+                    <p key={line} class="slds-m-bottom_xx-small slds-p-left_small">{line}</p>
+                </template>
+        </template>
+
+        <!-- Error message -->
+        <template if:true={error}>
+            <div class="slds-text-color_error slds-p-around_small">{error}</div>
+        </template>
+
+    </lightning-card>
+</template>
+
+
