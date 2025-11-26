@@ -1,12 +1,19 @@
 <template>
     <lightning-card title={labelOpportunityProducts}>
 
+        <template if:true={hasStockError}>
+            <div class="slds-notify slds-notify_alert slds-theme_warning slds-m-around_small">
+                {quantityProblemLabel}
+            </div>
+        </template>
+
         <!-- PRODUCT TABLE -->
         <template if:true={hasProducts}>
             <lightning-datatable
                 key-field="id"
                 data={products}
-                columns={columns}>
+                columns={columns}
+                onrowaction={handleRowAction}>
             </lightning-datatable>
         </template>
 
