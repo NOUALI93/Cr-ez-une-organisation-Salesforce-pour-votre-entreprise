@@ -1,7 +1,7 @@
 import { LightningElement, api, track, wire } from 'lwc';
 import getOpportunityProducts from '@salesforce/apex/OpportunityProductsController.getOpportunityProducts';
 
-// Custom labels
+// Custom Labels
 import Opportunity_Products from '@salesforce/label/c.Opportunity_Products';
 import No_Product_Opportunity from '@salesforce/label/c.No_Product_Opportunity';
 import Product_Name from '@salesforce/label/c.Product_Name';
@@ -11,6 +11,7 @@ import Total_Price from '@salesforce/label/c.Total_Price';
 import Quantity_In_Stock from '@salesforce/label/c.Quantity_In_Stock';
 
 export default class OpportunityProducts extends LightningElement {
+
     @api recordId;
 
     @track products = [];
@@ -18,7 +19,6 @@ export default class OpportunityProducts extends LightningElement {
     @track isCommercial = false;
     @track error;
 
-    // Table columns with custom labels
     columns = [
         { label: Product_Name, fieldName: 'productName' },
         { label: Quantity, fieldName: 'quantity', type: 'number' },
@@ -27,13 +27,16 @@ export default class OpportunityProducts extends LightningElement {
         { label: Quantity_In_Stock, fieldName: 'quantityInStock', type: 'number' }
     ];
 
-    // Split the multi-line No Product message into array
+    get labelOpportunityProducts() {
+        return Opportunity_Products;
+    }
+
     get noProductLines() {
         return No_Product_Opportunity.split(/\r?\n/);
     }
 
-    get labelOpportunityProducts() {
-        return Opportunity_Products;
+    get hasProducts() {
+        return this.products && this.products.length > 0;
     }
 
     @wire(getOpportunityProducts, { opportunityId: '$recordId' })
@@ -44,15 +47,12 @@ export default class OpportunityProducts extends LightningElement {
             this.isCommercial = data.isCommercial;
             this.error = undefined;
         } else if (error) {
-            if (error) {
+            if (error.body) {
                 this.error = error.body.message;
             } else {
-                this.error = error;
+                this.error = error.message;
             }
             this.products = [];
-            this.isAdmin = false;
-            this.isCommercial = false;
         }
     }
 }
-

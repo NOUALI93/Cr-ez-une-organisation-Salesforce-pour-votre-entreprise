@@ -4,13 +4,20 @@ public with sharing class OpportunityProductsController {
     public static OpportunityProductsResult getOpportunityProducts(Id opportunityId) {
 
         // Get current user profile
-        String profileName = [SELECT Profile.Name FROM User WHERE Id = :UserInfo.getUserId()].Profile.Name;
+        String profileName = [
+            SELECT Profile.Name FROM User WHERE Id = :UserInfo.getUserId()
+        ].Profile.Name;
+
         Boolean isAdmin = profileName == 'System Administrator';
         Boolean isCommercial = profileName == 'Commercial';
 
         // Query OpportunityLineItems
         List<OpportunityLineItem> oliList = [
-            SELECT Id, OpportunityId, Quantity, UnitPrice, TotalPrice,
+            SELECT Id,
+                   OpportunityId,
+                   Quantity,
+                   UnitPrice,
+                   TotalPrice,
                    PricebookEntry.Product2Id,
                    PricebookEntry.Product2.Name,
                    PricebookEntry.Product2.QuantityInStock__c
@@ -34,7 +41,11 @@ public with sharing class OpportunityProductsController {
         @AuraEnabled public Boolean isAdmin;
         @AuraEnabled public Boolean isCommercial;
 
-        public OpportunityProductsResult(List<OpportunityProductDTO> products, Boolean isAdmin, Boolean isCommercial) {
+        public OpportunityProductsResult(
+            List<OpportunityProductDTO> products,
+            Boolean isAdmin,
+            Boolean isCommercial
+        ) {
             this.products = products;
             this.isAdmin = isAdmin;
             this.isCommercial = isCommercial;
