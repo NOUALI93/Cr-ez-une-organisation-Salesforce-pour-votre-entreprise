@@ -1,6 +1,9 @@
 import { LightningElement, api, track, wire } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import getOpportunityProducts from '@salesforce/apex/OpportunityProductsController.getOpportunityProducts';
+import deleteOpportunityProduct from '@salesforce/apex/OpportunityProductsController.deleteOpportunityProduct';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { refreshApex } from '@salesforce/apex';
 
 // Custom Labels
 import Opportunity_Products from '@salesforce/label/c.Opportunity_Products';
@@ -28,7 +31,7 @@ export default class OpportunityProducts extends NavigationMixin(LightningElemen
 
         let cols = [
             { label: Product_Name, fieldName: 'productName' },
-            { label: Quantity, fieldName: 'quantity', type: 'text', cellAttributes: { class: { fieldName: 'quantityClass' } } },
+            { label: Quantity, fieldName: 'quantity', type: 'text', cellAttributes: { style: { fieldName: 'quantityStyle' } } },
             { label: Unit_Price, fieldName: 'unitPrice', type: 'currency' },
             { label: Total_Price, fieldName: 'totalPrice', type: 'currency' },
             { label: Quantity_In_Stock, fieldName: 'quantityInStock', type: 'number' }
@@ -87,13 +90,21 @@ export default class OpportunityProducts extends NavigationMixin(LightningElemen
     }
 
     @wire(getOpportunityProducts, { opportunityId: '$recordId' })
-    wiredProducts({ error, data }) {
+    wiredProducts(result) {
+        this.wiredResult = result;
+        const { data, error } = result;
+
         if (data) {
             this.products = data.products.map(item => {
                 const isOverStock = item.quantity > item.quantityInStock;
+
                 return {
                     ...item,
-                    quantityClass: isOverStock ? 'qty-error' : 'qty-ok'
+
+                    // ADD THIS LINE
+                    quantityStyle: isOverStock
+                        ? 'background-color:#fbeaea; color:#c23934; font-weight:bold;'
+                        : 'background-color:#e6f4ea; color:#2e844a; font-weight:bold;'
                 };
             });
             this.isAdmin = data.isAdmin;
@@ -134,7 +145,29 @@ export default class OpportunityProducts extends NavigationMixin(LightningElemen
         });
     }
 
-    deleteRow(row) {
-    this.products = this.products.filter(item => item.id !== row.id);
-}
+    async deleteRow(row) {
+        try {
+            await deleteOpportunityProduct({ opportunityLineItemId: row.id });
+
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Success',
+                    message: 'Product removed from opportunity',
+                    variant: 'success'
+                })
+            );
+
+            await refreshApex(this.wiredResult);
+
+        } catch (error) {
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Error',
+                    message: error.body.message,
+                    variant: 'error'
+                })
+            );
+        }
+    }
+
 }

@@ -72,4 +72,34 @@ public with sharing class OpportunityProductsController {
             this.productId = oli.PricebookEntry.Product2Id;
         }
     }
+
+    @AuraEnabled
+    public static void deleteOpportunityProduct(Id opportunityLineItemId) {
+
+        // Get the line item with related product
+        OpportunityLineItem oli = [
+            SELECT Id, Quantity, PricebookEntry.Product2Id 
+            FROM OpportunityLineItem
+            WHERE Id = :opportunityLineItemId
+            LIMIT 1
+        ];
+
+        // Get the related product
+        Product2 prod = [
+            SELECT Id, QuantityInStock__c
+            FROM Product2
+            WHERE Id = :oli.PricebookEntry.Product2Id
+            LIMIT 1
+        ];
+
+        // Add back quantity to stock
+        prod.QuantityInStock__c += oli.Quantity;
+
+        // Update product first
+        update prod;
+
+        // Delete the line item
+        delete oli;
+    }
+
 }

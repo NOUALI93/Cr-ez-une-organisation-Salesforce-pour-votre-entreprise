@@ -1,6 +1,13 @@
 <template>
     <lightning-card title={labelOpportunityProducts}>
 
+         <!-- ERROR -->
+        <template if:true={error}>
+            <div class="slds-text-color_error slds-p-around_medium">
+                {error}
+            </div>
+        </template>
+        
         <template if:true={hasStockError}>
             <div class="slds-notify slds-notify_alert slds-theme_warning slds-m-around_small">
                 {quantityProblemLabel}
@@ -24,13 +31,6 @@
                     {line}
                 </p>
             </template>
-        </template>
-        
-        <!-- ERROR -->
-        <template if:true={error}>
-            <div class="slds-text-color_error slds-p-around_medium">
-                {error}
-            </div>
         </template>
 
     </lightning-card>
