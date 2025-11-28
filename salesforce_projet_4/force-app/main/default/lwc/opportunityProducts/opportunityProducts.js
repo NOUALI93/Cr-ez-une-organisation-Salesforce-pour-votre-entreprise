@@ -100,8 +100,6 @@ export default class OpportunityProducts extends NavigationMixin(LightningElemen
 
                 return {
                     ...item,
-
-                    // ADD THIS LINE
                     quantityStyle: isOverStock
                         ? 'background-color:#fbeaea; color:#c23934; font-weight:bold;'
                         : 'background-color:#e6f4ea; color:#2e844a; font-weight:bold;'
@@ -169,5 +167,4 @@ export default class OpportunityProducts extends NavigationMixin(LightningElemen
             );
         }
     }
-
 }

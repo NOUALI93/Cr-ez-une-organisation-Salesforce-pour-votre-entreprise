@@ -9,7 +9,7 @@
         </template>
         
         <template if:true={hasStockError}>
-            <div class="slds-notify slds-notify_alert slds-theme_warning slds-m-around_small">
+            <div class="slds-notify slds-notify_alert slds-theme_warning">
                 {quantityProblemLabel}
             </div>
         </template>
@@ -27,7 +27,7 @@
         <!-- NO PRODUCTS MESSAGE -->
         <template if:false={hasProducts}>
             <template for:each={noProductLines} for:item="line">
-                <p key={line} class="slds-m-bottom_xx-small slds-p-left_small">
+                <p key={line} class="slds-m-bottom_x-small">
                     {line}
                 </p>
             </template>
