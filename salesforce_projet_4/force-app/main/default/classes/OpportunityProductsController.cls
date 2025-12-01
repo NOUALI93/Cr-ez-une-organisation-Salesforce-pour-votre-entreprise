@@ -78,7 +78,7 @@ public with sharing class OpportunityProductsController {
 
         // Get the line item with related product
         OpportunityLineItem oli = [
-            SELECT Id, Quantity, PricebookEntry.Product2Id 
+            SELECT Id 
             FROM OpportunityLineItem
             WHERE Id = :opportunityLineItemId
             LIMIT 1
