@@ -1,0 +1,11 @@
+:host ::deep .qty-error {
+    background-color: #fbeaea !important;
+    color: #c23934 !important;
+    font-weight: bold !important;
+}
+
+:host ::deep .qty-ok {
+    background-color: #e6f4ea !important;
+    color: #2e844a !important;
+    font-weight: bold !important;
+}

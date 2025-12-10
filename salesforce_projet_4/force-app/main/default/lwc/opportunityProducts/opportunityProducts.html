@@ -1,0 +1,37 @@
+<template>
+    <lightning-card title={labelOpportunityProducts}>
+
+         <!-- ERROR -->
+        <template if:true={error}>
+            <div class="slds-text-color_error slds-p-around_medium">
+                {error}
+            </div>
+        </template>
+        
+        <template if:true={hasStockError}>
+            <div class="slds-notify slds-notify_alert slds-theme_warning">
+                {quantityProblemLabel}
+            </div>
+        </template>
+
+        <!-- PRODUCT TABLE -->
+        <template if:true={hasProducts}>
+            <lightning-datatable
+                key-field="id"
+                data={products}
+                columns={columns}
+                onrowaction={handleRowAction}>
+            </lightning-datatable>
+        </template>
+
+        <!-- NO PRODUCTS MESSAGE -->
+        <template if:false={hasProducts}>
+            <template for:each={noProductLines} for:item="line">
+                <p key={line} class="slds-m-bottom_x-small">
+                    {line}
+                </p>
+            </template>
+        </template>
+
+    </lightning-card>
+</template>
